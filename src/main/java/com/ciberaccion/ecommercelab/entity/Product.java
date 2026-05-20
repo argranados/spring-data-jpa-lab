@@ -14,6 +14,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +23,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "products")
+@NamedEntityGraph(
+    name = "Product.withCategory",
+    attributeNodes = @NamedAttributeNode("category")
+)
 @Getter
 @Setter
 @NoArgsConstructor

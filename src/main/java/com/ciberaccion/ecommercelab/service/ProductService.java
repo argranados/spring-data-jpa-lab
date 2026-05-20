@@ -66,7 +66,17 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         Pageable pageable = PageRequest.of(page, size, Sort.by("price").ascending());
         return productRepository.findByCategoryPaginated(category, pageable)
-            .map(this::toDTO);
+                .map(this::toDTO);
+    }
+
+    // Provoca el problema, sin ProductDTO sin toDTO
+    @Transactional(readOnly = true)
+    public List<ProductDTO> findAllWithCategory() {
+        return productRepository.findAll()      // esto lanza el N + 1, ahora probar 2da sol con EntityGraph
+        // return productRepository.findAllWithCategoryFetch() // 1a sol. esto soluciona N+1 con JOIN FETCH
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     private ProductDTO toDTO(Product product) {

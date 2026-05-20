@@ -31,7 +31,7 @@ public class ProductController {
 
     @GetMapping("/price-range")
     public List<ProductDTO> byPriceRange(@RequestParam BigDecimal min,
-                                       @RequestParam BigDecimal max) {
+            @RequestParam BigDecimal max) {
         return productService.findByPriceRange(min, max);
     }
 
@@ -47,8 +47,14 @@ public class ProductController {
 
     @GetMapping("/category/{id}/paginated")
     public Page<ProductDTO> byCategoryPaginated(@PathVariable Long id,
-                                              @RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         return productService.findByCategoryPaginated(id, page, size);
+    }
+
+    // Provoca el problema N+1, sin ProductDTO sin toDTO
+    @GetMapping("/all-with-category")
+    public List<ProductDTO> allWithCategory() {
+        return productService.findAllWithCategory();
     }
 }
