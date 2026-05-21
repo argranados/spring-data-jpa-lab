@@ -72,8 +72,9 @@ public class ProductService {
     // Provoca el problema, sin ProductDTO sin toDTO
     @Transactional(readOnly = true)
     public List<ProductDTO> findAllWithCategory() {
-        return productRepository.findAll()      // esto lanza el N + 1, ahora probar 2da sol con EntityGraph
-        // return productRepository.findAllWithCategoryFetch() // 1a sol. esto soluciona N+1 con JOIN FETCH
+        return productRepository.findAll() // esto lanza el N + 1, ahora probar 2da sol con EntityGraph
+                // return productRepository.findAllWithCategoryFetch() // 1a sol. esto soluciona
+                // N+1 con JOIN FETCH
                 .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
@@ -88,6 +89,8 @@ public class ProductService {
         dto.setCategoryName(product.getCategory() != null
                 ? product.getCategory().getName()
                 : null);
+        dto.setCreatedAt(product.getCreatedAt());
+        dto.setUpdatedAt(product.getUpdatedAt());
         return dto;
     }
 }

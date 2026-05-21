@@ -1,13 +1,15 @@
 package com.ciberaccion.ecommercelab.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDTO {
@@ -16,4 +18,6 @@ public class ProductDTO {
     private BigDecimal price;
     private Integer stock;
     private String categoryName;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

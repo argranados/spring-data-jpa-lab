@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "customers")
 @Getter @Setter
 @NoArgsConstructor
-public class Customer {
+public class Customer extends Auditable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

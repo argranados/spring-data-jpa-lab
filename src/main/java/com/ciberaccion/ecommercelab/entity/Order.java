@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "orders")
 @Getter @Setter
 @NoArgsConstructor
-public class Order {
+public class Order extends Auditable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
