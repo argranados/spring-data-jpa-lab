@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import com.ciberaccion.ecommercelab.dto.ProductDTO;
 import com.ciberaccion.ecommercelab.entity.Category;
 import com.ciberaccion.ecommercelab.entity.Product;
+import com.ciberaccion.ecommercelab.helper.ProductSpecification;
 import com.ciberaccion.ecommercelab.repository.CategoryRepository;
 import com.ciberaccion.ecommercelab.repository.ProductRepository;
+import com.ciberaccion.ecommercelab.repository.ProductSummary;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import lombok.RequiredArgsConstructor;
 
@@ -91,6 +94,31 @@ public class ProductService {
                 : null);
         dto.setCreatedAt(product.getCreatedAt());
         dto.setUpdatedAt(product.getUpdatedAt());
+        dto.setVersion(product.getVersion());
         return dto;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductSummary> findInStock() {
+        return productRepository.findByStockGreaterThan(0);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductDTO> findWithFilters(String name, String categoryName,
+            BigDecimal minPrice, BigDecimal maxPrice,
+            Boolean onlyInStock) {
+        Specification<Product> spec = Specification
+                .where(ProductSpecification.hasName(name))
+                .and(ProductSpecification.hasCategory(categoryName))
+                .and(ProductSpecification.priceBetween(minPrice, maxPrice));
+
+        if (Boolean.TRUE.equals(onlyInStock)) {
+            spec = spec.and(ProductSpecification.inStock());
+        }
+
+        return productRepository.findAll(spec)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 }

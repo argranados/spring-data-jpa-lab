@@ -17,20 +17,18 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "products")
-@NamedEntityGraph(
-    name = "Product.withCategory",
-    attributeNodes = @NamedAttributeNode("category")
-)
+@NamedEntityGraph(name = "Product.withCategory", attributeNodes = @NamedAttributeNode("category"))
 @Getter
 @Setter
 @NoArgsConstructor
-public class Product extends Auditable{
+public class Product extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,9 +51,14 @@ public class Product extends Auditable{
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "product_tags", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags = new ArrayList<>();
+
+    @Version
+    @Column(nullable = false)
+    private Long version;
 }
 
 // Concepto clave — @JoinTable
-// En @ManyToMany no hay FK en ninguna de las dos tablas — se crea una tabla intermedia product_tags. 
-// @JoinTable define cómo se llama esa tabla y sus columnas. 
+// En @ManyToMany no hay FK en ninguna de las dos tablas — se crea una tabla
+// intermedia product_tags.
+// @JoinTable define cómo se llama esa tabla y sus columnas.
 // El lado que tiene @JoinTable es el dueño, el otro tiene mappedBy.

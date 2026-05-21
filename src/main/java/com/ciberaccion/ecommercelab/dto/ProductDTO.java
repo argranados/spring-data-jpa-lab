@@ -20,4 +20,5 @@ public class ProductDTO {
     private String categoryName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long version;
 }

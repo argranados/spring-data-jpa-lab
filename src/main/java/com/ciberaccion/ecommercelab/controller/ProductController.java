@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.domain.Page;
 
 import com.ciberaccion.ecommercelab.dto.ProductDTO;
-import com.ciberaccion.ecommercelab.entity.Product;
+import com.ciberaccion.ecommercelab.repository.ProductSummary;
 import com.ciberaccion.ecommercelab.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -57,4 +57,21 @@ public class ProductController {
     public List<ProductDTO> allWithCategory() {
         return productService.findAllWithCategory();
     }
+
+    // esto es para probar projections
+    @GetMapping("/in-stock")
+    public List<ProductSummary> inStock() {
+        return productService.findInStock();
+    }
+
+    @GetMapping("/filter")
+    public List<ProductDTO> filter(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String categoryName,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) Boolean onlyInStock) {
+        return productService.findWithFilters(name, categoryName, minPrice, maxPrice, onlyInStock);
+    }
+
 }

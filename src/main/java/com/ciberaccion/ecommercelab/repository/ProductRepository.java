@@ -8,13 +8,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.ciberaccion.ecommercelab.entity.Category;
 import com.ciberaccion.ecommercelab.entity.Product;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>,
+        JpaSpecificationExecutor<Product> {
 
     // Buscar por nombre exacto
     Optional<Product> findByName(String name);
@@ -29,7 +31,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByPriceLessThan(BigDecimal price);
 
     // Productos en stock (stock mayor a 0)
-    List<Product> findByStockGreaterThan(Integer stock);
+    // List<Product> findByStockGreaterThan(Integer stock);
 
     // Productos por categoría ordenados por precio
     List<Product> findByCategoryOrderByPriceAsc(Category category);
@@ -54,16 +56,20 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByCategoryPaginated(@Param("category") Category category,
             Pageable pageable);
 
-//     Solución 1 — JPQL con JOIN FETCH
-//     JOIN FETCH le dice a Hibernate: "trae los productos Y sus categorías en una sola query".
+    // Solución 1 — JPQL con JOIN FETCH
+    // JOIN FETCH le dice a Hibernate: "trae los productos Y sus categorías en una
+    // sola query".
     @Query("SELECT p FROM Product p JOIN FETCH p.category")
     List<Product> findAllWithCategoryFetch();
-    
-//     @EntityGraph(value = "Product.withCategory")
-//     @Query("SELECT p FROM Product p")
-//     List<Product> findAllWithEntityGraph();
 
-    //Segunda solucion con @EntityGraph
-    @EntityGraph(attributePaths = {"category"})
-    List<Product> findAll();  // override del findAll de JpaRepository
+    // @EntityGraph(value = "Product.withCategory")
+    // @Query("SELECT p FROM Product p")
+    // List<Product> findAllWithEntityGraph();
+
+    // Segunda solucion con @EntityGraph
+    @EntityGraph(attributePaths = { "category" })
+    List<Product> findAll(); // override del findAll de JpaRepository
+
+    // esto es para probar Projections
+    List<ProductSummary> findByStockGreaterThan(Integer stock);
 }
